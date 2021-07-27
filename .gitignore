@@ -1,1 +1,8 @@
 .github/**
+
+cmake-build-debug-ubuntu-18/*
+
+.idea/*
+
+# Vim sessions
+*.vim
