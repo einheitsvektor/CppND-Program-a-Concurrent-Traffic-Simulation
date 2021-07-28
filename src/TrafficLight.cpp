@@ -18,7 +18,8 @@ template <typename T>
 void MessageQueue<T>::send(T &&msg)
 {
     std::lock_guard<std::mutex> uLock(_mutex);
-    _queue.push_back(std::move(msg));
+    _queue.clear();
+    _queue.emplace_back(std::move(msg));
     _cond.notify_one();
 }
 
@@ -49,19 +50,21 @@ void TrafficLight::simulate()
 // virtual function which is executed in a thread
 [[noreturn]] void TrafficLight::cycleThroughPhases()
 {
-    std::random_device rd;
+    static std::random_device rd;
     static std::mt19937 gen(rd());
-    std::uniform_int_distribution<unsigned> dist(4000, 6000);
+    static std::uniform_int_distribution<unsigned> dist(4000, 6000);
 
     auto lastUpdate = std::chrono::system_clock::now();
+    unsigned cycleLen = dist(gen);
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
         auto timeSinceLastUpdate = std::chrono::system_clock::now();
         if (std::chrono::duration_cast<std::chrono::milliseconds>
-                (timeSinceLastUpdate - lastUpdate ).count() >= dist(gen)) {
+                (timeSinceLastUpdate - lastUpdate ).count() >= cycleLen) {
             _currentPhase = _currentPhase == TrafficLightPhase::red ? TrafficLightPhase::green : TrafficLightPhase::red;
             lastUpdate = std::chrono::system_clock::now();
             _queue.send(std::move(_currentPhase));
+            cycleLen = dist(gen);
         }
     }
 }
