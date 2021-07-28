@@ -35,6 +35,11 @@ private:
 // Furthermore, there shall be the private member _currentPhase which can take „red“ or „green“
 // as its value.
 
+enum class TrafficLightPhase {
+    red,
+    green
+};
+
 class TrafficLight : public TrafficObject
 {
 public:
@@ -42,10 +47,6 @@ public:
     TrafficLight();
 
     // getters / setters
-    enum TrafficLightPhase {
-        red,
-        green,
-    };
     TrafficLightPhase getCurrentPhase();
 
     // typical behaviour methods
