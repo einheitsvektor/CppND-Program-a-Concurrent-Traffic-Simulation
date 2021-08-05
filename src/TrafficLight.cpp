@@ -59,8 +59,7 @@ void TrafficLight::simulate()
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
         auto timeSinceLastUpdate = std::chrono::system_clock::now();
-        if (std::chrono::duration_cast<std::chrono::milliseconds>
-                (timeSinceLastUpdate - lastUpdate ).count() >= cycleLen) {
+        if (std::chrono::duration_cast<std::chrono::milliseconds>(timeSinceLastUpdate - lastUpdate ).count() >= cycleLen) {
             _currentPhase = _currentPhase == TrafficLightPhase::red ? TrafficLightPhase::green : TrafficLightPhase::red;
             lastUpdate = std::chrono::system_clock::now();
             _queue.send(std::move(_currentPhase));
